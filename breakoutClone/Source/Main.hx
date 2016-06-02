@@ -25,6 +25,8 @@ class Main extends Sprite
 	private var ball:Ball;
 	private var ballMovement:Point;
 	private var ballSpeed:Int;
+
+	private var map = new Array<Breakable>();
 	private var breakable:Breakable;
 	
 	private var scorePlayer:Int;
@@ -99,6 +101,17 @@ class Main extends Sprite
 			if ( (ball.x > (platform.x) && ball.x < (platform.x+150)) && (ball.y > (platform.y) && ball.y < (platform.y+15)) ) {
 				ballMovement.y *= -1;
 			}
+
+			if ( (ball.x > (breakable.x) && ball.x < (platform.x+150)) && (ball.y > (platform.y) && ball.y < (platform.y+15)) ) {
+				ballMovement.y *= -1;
+			}
+
+			var i:Int;
+			for (i in 0...map.length) {
+				if ( (ball.x > (map[i].x) && ball.x < (map[i].x+150)) && (ball.y > (map[i].y) && ball.y < (map[i].y+15)) ) {
+					this.removeChild(map[i]);
+				}
+			}
 		}
 	}
 	
@@ -108,6 +121,7 @@ class Main extends Sprite
 			breakable.x = i * 50;
 			breakable.y = 250;
 			this.addChild(breakable);
+			map[i] = breakable;
 		}	
 	}
 
