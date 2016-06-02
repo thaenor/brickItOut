@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="BreakoutClone" package="com.sample.breakoutclone" version="1.0.0" company="Company Name" />
+	<app main="Main" path="Export" file="BreakoutClone" />
+	
+	<source path="Source" />
+	
+	<haxelib name="openfl" />
+	
+	<assets path="Assets" rename="assets" />
+	
+	<window background="#333333" fps="60" />
+	
+	<window width="500" height="500" unless="mobile" />
+</project>
