@@ -13,7 +13,8 @@ import openfl.text.TextFormatAlign;
 enum GameState {
 	Paused;
 	Playing;
-	//TODO: add win and loose states
+	Lose;
+	Win;
 }
 
 class Main extends Sprite 
@@ -29,7 +30,7 @@ class Main extends Sprite
 	private var map = new Array<Breakable>();
 	private var breakable:Breakable;
 	
-	private var scorePlayer:Int;
+	private var lives:Int;
 	private var level:Int;
 	
 	private var messageField:TextField;
@@ -73,7 +74,7 @@ class Main extends Sprite
 		platformSpeed = 7;
 
 		renderMap();
-		scorePlayer = 0;
+		lives = 3;
 		level = 1;
 		renderText("Press SPACE to start\nUse ARROW KEYS to move your platform");
 		setGameState(Paused);
@@ -93,17 +94,17 @@ class Main extends Sprite
 			ball.x += ballMovement.x;
 			ball.y += ballMovement.y;
 			if (platform.x < 5) platform.x = 5;
-			if (platform.x > 395) platform.x = 395;
+			if (platform.x > 345) platform.x = 345;
 			if (ball.y < 5 ) ballMovement.y *= -1;
-			if (ball.y > 495) setGameState(Paused);
+			if (ball.y > 495) setGameState(Lose);
 			if (ball.x < 5 || ball.x > 495) ballMovement.x *= -1;
 
 			if ( (ball.x > (platform.x) && ball.x < (platform.x+150)) && (ball.y > (platform.y) && ball.y < (platform.y+15)) ) {
-				ballMovement.y *= -1;
+				bounceBall(); //ballMovement.y *= -1;
 			}
 
 			if ( (ball.x > (breakable.x) && ball.x < (platform.x+150)) && (ball.y > (platform.y) && ball.y < (platform.y+15)) ) {
-				ballMovement.y *= -1;
+				bounceBall(); //ballMovement.y *= -1;
 			}
 
 			var i:Int;
@@ -111,21 +112,44 @@ class Main extends Sprite
 				if ( (ball.x > (map[i].x) && ball.x < (map[i].x+20)) && (ball.y > (map[i].y) && ball.y < (map[i].y+20)) ) {
 					this.removeChild(map[i]);
 					map.remove(map[i]);
-					ballMovement.y *= -1;
+					if(map.length == 0){setGameState(Win);}
+					bounceBall(); //ballMovement.y *= -1;
 					break;
 				}
 			}
 		}
 	}
+
+	private function bounceBall():Void {
+		var direction:Int = (ballMovement.x > 0)?( -1):(1);
+		var randomAngle:Float = (Math.random() * Math.PI / 2) - 45;
+		ballMovement.x = direction * Math.cos(randomAngle) * ballSpeed;
+		ballMovement.y = Math.sin(randomAngle) * ballSpeed;
+	}
 	
 	public function renderMap() {
-		for (i in 0...10) {
+		for (i in 0...3) {
 			breakable = new Breakable();
-			breakable.x = i * 50;
+			breakable.x = i * 150;
 			breakable.y = 250;
 			this.addChild(breakable);
 			map[i] = breakable;
 		}	
+		/*var i:Int = 5; var j:Int = 5;
+		while(i <= 500){
+			while(j <= 300){
+				var randomizer:Int = (Math.random() > .5)?(1):( -1); //either 1 or -1 draws or not a block
+				if(randomizer == 1){
+					breakable = new Breakable();
+					breakable.x = i;
+					breakable.y = j;
+					this.addChild(breakable);
+					map.push(breakable);
+				}
+				j = j + 15;
+			}
+			x = x + 15;
+		}*/
 	}
 
 	public function renderText(message:String){
@@ -152,7 +176,7 @@ class Main extends Sprite
 	}
 
 	private function updateScore():Void {
-		scoreField.text = "Score: " + scorePlayer;
+		scoreField.text = "Lives: " + lives;
 	}
 
 	private function setGameState(state:GameState):Void {
@@ -161,8 +185,26 @@ class Main extends Sprite
 		if (state == Paused) {
 			messageField.alpha = 1;
 			//stop the ball
-		}else {
+		}else if(state == Playing){
 			messageField.alpha = 0;
+		}else if(state == Lose){
+			lives--;
+			messageField.alpha = 1;
+			if(lives <= 0){
+				messageField.text = "Game over";
+			}else {
+				platform.x = 150;
+				platform.y = 450;
+				ball.x = 250;
+				ball.y = 400;
+			}
+		}else if(state == Win){
+			messageField.alpha = 1;
+			platform.x = 150;
+			platform.y = 450;
+			ball.x = 250;
+			ball.y = 400;
+			renderMap();
 		}
 	}
 
