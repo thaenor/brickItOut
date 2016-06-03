@@ -110,7 +110,9 @@ class Main extends Sprite
 			for (i in 0...map.length) {
 				if ( (ball.x > (map[i].x) && ball.x < (map[i].x+20)) && (ball.y > (map[i].y) && ball.y < (map[i].y+20)) ) {
 					this.removeChild(map[i]);
+					map.remove(map[i]);
 					ballMovement.y *= -1;
+					break;
 				}
 			}
 		}
