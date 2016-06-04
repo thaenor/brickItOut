@@ -128,28 +128,29 @@ class Main extends Sprite
 	}
 	
 	public function renderMap() {
-		for (i in 0...3) {
+		/*for (i in 0...3) {
 			breakable = new Breakable();
 			breakable.x = i * 150;
 			breakable.y = 250;
 			this.addChild(breakable);
 			map[i] = breakable;
-		}	
-		/*var i:Int = 5; var j:Int = 5;
-		while(i <= 500){
-			while(j <= 300){
+		}*/	
+		var i:Int = 5; var j:Int = 5;
+		while(i <= 250){
+			while(j <= 500){
 				var randomizer:Int = (Math.random() > .5)?(1):( -1); //either 1 or -1 draws or not a block
 				if(randomizer == 1){
 					breakable = new Breakable();
-					breakable.x = i;
-					breakable.y = j;
+					breakable.x = j;
+					breakable.y = i;
 					this.addChild(breakable);
 					map.push(breakable);
 				}
-				j = j + 15;
+				j = j + 25;
 			}
-			x = x + 15;
-		}*/
+			i = i + 25;
+			j = 0;
+		}
 	}
 
 	public function renderText(message:String){
