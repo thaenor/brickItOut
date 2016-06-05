@@ -8,7 +8,9 @@ import openfl.geom.Point;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
 import openfl.text.TextFormatAlign;
-
+import openfl.media.Sound;
+import openfl.Assets;
+import lime.project.SplashScreen;
 
 enum GameState {
 	Paused;
@@ -40,7 +42,6 @@ class Main extends Sprite
 	private var arrowKeyRight:Bool;
 	private var arrowKeyLeft:Bool;
 
-
 	/* ENTRY POINT */
 	
 	function resize(e) 
@@ -54,6 +55,10 @@ class Main extends Sprite
 		if (inited) return;
 		inited = true;
 		
+		var splashScreen = new SplashScreen("img/default.png",500,500);
+		var sound:Sound = Assets.getSound("audio/ManoPando.ogg");
+		sound.play(0.0, 999);
+
 		platform = new Platform();
 		platform.x = 150;
 		platform.y = 450;
@@ -112,8 +117,8 @@ class Main extends Sprite
 				if ( (ball.x > (map[i].x) && ball.x < (map[i].x+20)) && (ball.y > (map[i].y) && ball.y < (map[i].y+20)) ) {
 					this.removeChild(map[i]);
 					map.remove(map[i]);
-					if(map.length == 0){setGameState(Win);}
 					bounceBall(); //ballMovement.y *= -1;
+					if(map.length == 0){setGameState(Win);}
 					break;
 				}
 			}
@@ -128,13 +133,6 @@ class Main extends Sprite
 	}
 	
 	public function renderMap() {
-		/*for (i in 0...3) {
-			breakable = new Breakable();
-			breakable.x = i * 150;
-			breakable.y = 250;
-			this.addChild(breakable);
-			map[i] = breakable;
-		}*/	
 		var i:Int = 5; var j:Int = 5;
 		while(i <= 250){
 			while(j <= 500){
@@ -185,7 +183,6 @@ class Main extends Sprite
 		updateScore();
 		if (state == Paused) {
 			messageField.alpha = 1;
-			//stop the ball
 		}else if(state == Playing){
 			messageField.alpha = 0;
 		}else if(state == Lose){
@@ -205,6 +202,7 @@ class Main extends Sprite
 			platform.y = 450;
 			ball.x = 250;
 			ball.y = 400;
+			lives = 3;
 			renderMap();
 		}
 	}
@@ -218,6 +216,13 @@ class Main extends Sprite
 			arrowKeyRight = true;
 		} else if (event.keyCode == 37){ // left
 			arrowKeyLeft = true;
+		} else if(event.keyCode == 87){ // W key
+			var i:Int;
+			for (i in 0...map.length) {
+					this.removeChild(map[i]);
+					map.remove(map[i]);
+					if(map.length == 0){setGameState(Win);}
+			}
 		}
 	}
 
