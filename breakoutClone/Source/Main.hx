@@ -115,10 +115,6 @@ class Main extends Sprite
 				bounceBall(); //ballMovement.y *= -1;
 			}
 
-			if ( (ball.x > (breakable.x) && ball.x < (platform.x+150)) && (ball.y > (platform.y) && ball.y < (platform.y+15)) ) {
-				bounceBall(); //ballMovement.y *= -1;
-			}
-
 			ball.x += ballMovement.x;
 			ball.y += ballMovement.y;
 
@@ -136,9 +132,9 @@ class Main extends Sprite
 	}
 
 	private function bounceBall():Void {
-		var direction:Int = (ballMovement.x > 0)?( -1):(1);
+		//var direction:Int = (ballMovement.x > 0)?( -1):(1);
 		var randomAngle:Float = (Math.random() * Math.PI / 2) - 45;
-		ballMovement.x = direction * Math.cos(randomAngle) * ballSpeed;
+		ballMovement.x = -1 * Math.cos(randomAngle) * ballSpeed;
 		ballMovement.y = Math.sin(randomAngle) * ballSpeed;
 	}
 	
@@ -204,12 +200,13 @@ class Main extends Sprite
 			if(lives <= 0){
 				loseSound.play();
 				messageField.text = "Game over";
-			}else {
-				platform.x = 150;
-				platform.y = 450;
-				ball.x = 250;
-				ball.y = 400;
+				lives = 3;
 			}
+			platform.x = 150;
+			platform.y = 450;
+			ball.x = 250;
+			ball.y = 400;
+			
 			backgroundChannel.stop();
 			setGameState(Paused);
 		}else if(state == Win){
