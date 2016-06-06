@@ -81,7 +81,7 @@ ApplicationMain.init = function() {
 	}
 };
 ApplicationMain.main = function() {
-	ApplicationMain.config = { build : "2", company : "Company Name", file : "BreakoutClone", fps : 60, name : "BreakoutClone", orientation : "", packageName : "com.sample.breakoutclone", version : "1.0.0", windows : [{ antialiasing : 0, background : 3355443, borderless : false, depthBuffer : false, display : 0, fullscreen : false, hardware : false, height : 500, parameters : "{}", resizable : true, stencilBuffer : true, title : "BreakoutClone", vsync : false, width : 500, x : null, y : null}]};
+	ApplicationMain.config = { build : "4", company : "Company Name", file : "BreakoutClone", fps : 60, name : "BreakoutClone", orientation : "", packageName : "com.sample.breakoutclone", version : "1.0.0", windows : [{ antialiasing : 0, background : 3355443, borderless : false, depthBuffer : false, display : 0, fullscreen : false, hardware : false, height : 500, parameters : "{}", resizable : true, stencilBuffer : true, title : "BreakoutClone", vsync : false, width : 500, x : null, y : null}]};
 };
 ApplicationMain.start = function() {
 	var hasMain = false;
@@ -2026,9 +2026,9 @@ Main.prototype = $extend(openfl_display_Sprite.prototype,{
 		}
 		this.inited = true;
 		new lime_project_SplashScreen("img/default.png",500,500);
-		this.backgroundSound = openfl_Assets.getSound("audio/ManoPando.mp3");
-		this.winSound = openfl_Assets.getSound("audio/tada.mp3");
-		this.loseSound = openfl_Assets.getSound("audio/violin.mp3");
+		this.backgroundSound = openfl_Assets.getSound("audio/ManoPando.ogg");
+		this.winSound = openfl_Assets.getSound("audio/tada.ogg");
+		this.loseSound = openfl_Assets.getSound("audio/violin.ogg");
 		this.platform = new Platform();
 		this.platform.set_x(150);
 		this.platform.set_y(450);
@@ -2103,7 +2103,7 @@ Main.prototype = $extend(openfl_display_Sprite.prototype,{
 		}
 	}
 	,bounceBall: function() {
-		var randomAngle = Math.random() * Math.PI / 2 - 45;
+		var randomAngle = Math.random() * Math.PI / 2 - Math.PI / 4;
 		this.ballMovement.x = -1 * Math.cos(randomAngle) * this.ballSpeed;
 		this.ballMovement.y = Math.sin(randomAngle) * this.ballSpeed;
 	}
