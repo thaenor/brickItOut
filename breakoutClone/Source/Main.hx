@@ -9,6 +9,7 @@ import openfl.text.TextField;
 import openfl.text.TextFormat;
 import openfl.text.TextFormatAlign;
 import openfl.media.Sound;
+import openfl.media.SoundChannel;
 import openfl.Assets;
 import lime.project.SplashScreen;
 
@@ -41,7 +42,13 @@ class Main extends Sprite
 
 	private var arrowKeyRight:Bool;
 	private var arrowKeyLeft:Bool;
-
+	private var backgroundSound:Sound;
+	private var backgroundChannel:SoundChannel;
+	private var isBackgroundSoundPlaying:Bool = false;
+	private var winSound:Sound;
+	private var winChannel:SoundChannel;
+	private var loseSound:Sound;
+	private var loseChannel:SoundChannel;
 	/* ENTRY POINT */
 	
 	function resize(e) 
@@ -56,8 +63,9 @@ class Main extends Sprite
 		inited = true;
 		
 		var splashScreen = new SplashScreen("img/default.png",500,500);
-		var sound:Sound = Assets.getSound("audio/ManoPando.ogg");
-		sound.play(0.0, 999);
+		backgroundSound = Assets.getSound("audio/ManoPando.mp3");
+		winSound = Assets.getSound("audio/tada.mp3");
+		loseSound = Assets.getSound("audio/violin.mp3");
 
 		platform = new Platform();
 		platform.x = 150;
@@ -96,8 +104,7 @@ class Main extends Sprite
 			if (arrowKeyLeft) {
 				platform.x -= platformSpeed;
 			}
-			ball.x += ballMovement.x;
-			ball.y += ballMovement.y;
+
 			if (platform.x < 5) platform.x = 5;
 			if (platform.x > 345) platform.x = 345;
 			if (ball.y < 5 ) ballMovement.y *= -1;
@@ -111,6 +118,9 @@ class Main extends Sprite
 			if ( (ball.x > (breakable.x) && ball.x < (platform.x+150)) && (ball.y > (platform.y) && ball.y < (platform.y+15)) ) {
 				bounceBall(); //ballMovement.y *= -1;
 			}
+
+			ball.x += ballMovement.x;
+			ball.y += ballMovement.y;
 
 			var i:Int;
 			for (i in 0...map.length) {
@@ -183,12 +193,16 @@ class Main extends Sprite
 		updateScore();
 		if (state == Paused) {
 			messageField.alpha = 1;
+			if(isBackgroundSoundPlaying){backgroundChannel.stop();}
 		}else if(state == Playing){
 			messageField.alpha = 0;
+			backgroundChannel = backgroundSound.play(0.0, 2);
+			isBackgroundSoundPlaying = true;
 		}else if(state == Lose){
 			lives--;
 			messageField.alpha = 1;
 			if(lives <= 0){
+				loseSound.play();
 				messageField.text = "Game over";
 			}else {
 				platform.x = 150;
@@ -196,6 +210,8 @@ class Main extends Sprite
 				ball.x = 250;
 				ball.y = 400;
 			}
+			backgroundChannel.stop();
+			setGameState(Paused);
 		}else if(state == Win){
 			messageField.alpha = 1;
 			platform.x = 150;
@@ -204,6 +220,9 @@ class Main extends Sprite
 			ball.y = 400;
 			lives = 3;
 			renderMap();
+			backgroundChannel.stop();
+			winSound.play();
+			setGameState(Paused);
 		}
 	}
 
