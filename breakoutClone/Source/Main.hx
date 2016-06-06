@@ -133,7 +133,7 @@ class Main extends Sprite
 
 	private function bounceBall():Void {
 		//var direction:Int = (ballMovement.x > 0)?( -1):(1);
-		var randomAngle:Float = (Math.random() * Math.PI / 2) - 45;
+		var randomAngle:Float = (Math.random() * Math.PI / 2) - Math.PI/2;
 		ballMovement.x = -1 * Math.cos(randomAngle) * ballSpeed;
 		ballMovement.y = Math.sin(randomAngle) * ballSpeed;
 	}
