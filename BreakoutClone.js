@@ -81,7 +81,7 @@ ApplicationMain.init = function() {
 	}
 };
 ApplicationMain.main = function() {
-	ApplicationMain.config = { build : "4", company : "Company Name", file : "BreakoutClone", fps : 60, name : "BreakoutClone", orientation : "", packageName : "com.sample.breakoutclone", version : "1.0.0", windows : [{ antialiasing : 0, background : 3355443, borderless : false, depthBuffer : false, display : 0, fullscreen : false, hardware : false, height : 500, parameters : "{}", resizable : true, stencilBuffer : true, title : "BreakoutClone", vsync : false, width : 500, x : null, y : null}]};
+	ApplicationMain.config = { build : "25", company : "Company Name", file : "BreakoutClone", fps : 60, name : "BreakoutClone", orientation : "", packageName : "com.sample.breakoutclone", version : "1.0.0", windows : [{ antialiasing : 0, background : 3355443, borderless : false, depthBuffer : false, display : 0, fullscreen : false, hardware : false, height : 500, parameters : "{}", resizable : true, stencilBuffer : true, title : "BreakoutClone", vsync : false, width : 500, x : null, y : null}]};
 };
 ApplicationMain.start = function() {
 	var hasMain = false;
@@ -2026,9 +2026,9 @@ Main.prototype = $extend(openfl_display_Sprite.prototype,{
 		}
 		this.inited = true;
 		new lime_project_SplashScreen("img/default.png",500,500);
-		this.backgroundSound = openfl_Assets.getSound("audio/ManoPando.ogg");
-		this.winSound = openfl_Assets.getSound("audio/tada.ogg");
-		this.loseSound = openfl_Assets.getSound("audio/violin.ogg");
+		this.backgroundSound = openfl_Assets.getSound("audio/ManoPando.mp3");
+		this.winSound = openfl_Assets.getSound("audio/tada.mp3");
+		this.loseSound = openfl_Assets.getSound("audio/violin.mp3");
 		this.platform = new Platform();
 		this.platform.set_x(150);
 		this.platform.set_y(450);
@@ -2037,7 +2037,7 @@ Main.prototype = $extend(openfl_display_Sprite.prototype,{
 		this.ball.set_x(250);
 		this.ball.set_y(400);
 		this.addChild(this.ball);
-		this.ballSpeed = 7;
+		this.ballSpeed = 5;
 		this.ballMovement = new openfl_geom_Point(0,0);
 		var randomAngle = Math.random() * -(Math.PI / 2);
 		this.ballMovement.x = Math.cos(randomAngle) * this.ballSpeed;
@@ -2080,7 +2080,7 @@ Main.prototype = $extend(openfl_display_Sprite.prototype,{
 				this.ballMovement.x *= -1;
 			}
 			if(this.ball.get_x() > this.platform.get_x() && this.ball.get_x() < this.platform.get_x() + 150 && (this.ball.get_y() > this.platform.get_y() && this.ball.get_y() < this.platform.get_y() + 15)) {
-				this.bounceBall();
+				this.bounceBall("y");
 			}
 			var _g2 = this.ball;
 			_g2.set_x(_g2.get_x() + this.ballMovement.x);
@@ -2093,7 +2093,7 @@ Main.prototype = $extend(openfl_display_Sprite.prototype,{
 				if(this.ball.get_x() > this.map[i].get_x() && this.ball.get_x() < this.map[i].get_x() + 20 && (this.ball.get_y() > this.map[i].get_y() && this.ball.get_y() < this.map[i].get_y() + 20)) {
 					this.removeChild(this.map[i]);
 					HxOverrides.remove(this.map,this.map[i]);
-					this.bounceBall();
+					this.bounceBall("x");
 					if(this.map.length == 0) {
 						this.setGameState(GameState.Win);
 					}
@@ -2102,10 +2102,16 @@ Main.prototype = $extend(openfl_display_Sprite.prototype,{
 			}
 		}
 	}
-	,bounceBall: function() {
-		var randomAngle = Math.random() * Math.PI / 2 - Math.PI / 4;
-		this.ballMovement.x = -1 * Math.cos(randomAngle) * this.ballSpeed;
-		this.ballMovement.y = Math.sin(randomAngle) * this.ballSpeed;
+	,bounceBall: function(axis) {
+		if(axis == "x") {
+			var randomAngle = Math.random() * Math.PI / 2 + Math.PI / 2;
+			this.ballMovement.x = -1 * Math.cos(randomAngle) * this.ballSpeed;
+			this.ballMovement.y = Math.sin(randomAngle) * this.ballSpeed;
+		} else {
+			var randomAngle1 = Math.random() * Math.PI / 2 + Math.PI / 2;
+			this.ballMovement.x = Math.cos(randomAngle1) * this.ballSpeed;
+			this.ballMovement.y = -1 * Math.sin(randomAngle1) * this.ballSpeed;
+		}
 	}
 	,renderMap: function() {
 		var i = 5;
@@ -2161,11 +2167,11 @@ Main.prototype = $extend(openfl_display_Sprite.prototype,{
 			this.isBackgroundSoundPlaying = true;
 		} else if(state == GameState.Lose) {
 			this.lives--;
-			this.messageField.set_alpha(1);
 			if(this.lives <= 0) {
 				this.loseSound.play();
-				this.messageField.set_text("Game over");
 				this.lives = 3;
+				this.clearMap();
+				this.renderMap();
 			}
 			this.platform.set_x(150);
 			this.platform.set_y(450);
@@ -2201,14 +2207,16 @@ Main.prototype = $extend(openfl_display_Sprite.prototype,{
 			var _g1 = 0;
 			var _g = this.map.length;
 			while(_g1 < _g) {
-				var i = _g1++;
-				this.removeChild(this.map[i]);
-				HxOverrides.remove(this.map,this.map[i]);
+				++_g1;
+				this.clearMap();
 				if(this.map.length == 0) {
 					this.setGameState(GameState.Win);
 				}
 			}
 		}
+	}
+	,clearMap: function() {
+		while(this.map.length > 0) this.removeChild(this.map.pop());
 	}
 	,keyUp: function(event) {
 		if(event.keyCode == 39) {
