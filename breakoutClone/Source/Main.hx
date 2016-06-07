@@ -76,7 +76,7 @@ class Main extends Sprite
 		ball.x = 250;
 		ball.y = 400;
 		this.addChild(ball);
-		ballSpeed = 7;
+		ballSpeed = 5;
 		ballMovement = new Point(0, 0);
 		var randomAngle:Float = Math.random() * -(Math.PI/2);
 		ballMovement.x = Math.cos(randomAngle) * ballSpeed;
@@ -112,7 +112,7 @@ class Main extends Sprite
 			if (ball.x < 5 || ball.x > 495) ballMovement.x *= -1;
 
 			if ( (ball.x > (platform.x) && ball.x < (platform.x+150)) && (ball.y > (platform.y) && ball.y < (platform.y+15)) ) {
-				bounceBall(); //ballMovement.y *= -1;
+				bounceBall("y");
 			}
 
 			ball.x += ballMovement.x;
@@ -123,7 +123,7 @@ class Main extends Sprite
 				if ( (ball.x > (map[i].x) && ball.x < (map[i].x+20)) && (ball.y > (map[i].y) && ball.y < (map[i].y+20)) ) {
 					this.removeChild(map[i]);
 					map.remove(map[i]);
-					bounceBall(); //ballMovement.y *= -1;
+					bounceBall("x"); //ballMovement.y *= -1;
 					if(map.length == 0){setGameState(Win);}
 					break;
 				}
@@ -131,18 +131,23 @@ class Main extends Sprite
 		}
 	}
 
-	private function bounceBall():Void {
-		//var direction:Int = (ballMovement.x > 0)?( -1):(1);
-		var randomAngle:Float = (Math.random() * Math.PI / 2) - 45;
-		ballMovement.x = -1 * Math.cos(randomAngle) * ballSpeed;
-		ballMovement.y = Math.sin(randomAngle) * ballSpeed;
+	private function bounceBall(axis:String):Void {
+		if(axis == "x"){
+			var randomAngle:Float = (Math.random() * Math.PI / 2) + Math.PI/2;
+			ballMovement.x = -1 * Math.cos(randomAngle) * ballSpeed;
+			ballMovement.y = Math.sin(randomAngle) * ballSpeed;
+		} else {
+			var randomAngle:Float = (Math.random() * Math.PI / 2) + Math.PI/2;
+			ballMovement.x = Math.cos(randomAngle) * ballSpeed;
+			ballMovement.y = -1 * Math.sin(randomAngle) * ballSpeed;
+		}
 	}
 	
 	public function renderMap() {
 		var i:Int = 5; var j:Int = 5;
 		while(i <= 250){
 			while(j <= 500){
-				var randomizer:Int = (Math.random() > .5)?(1):( -1); //either 1 or -1 draws or not a block
+				var randomizer:Int = (Math.random() > .5)?(1):( -1); //either 1 or -1 draws (or not) a block
 				if(randomizer == 1){
 					breakable = new Breakable();
 					breakable.x = j;
@@ -196,11 +201,11 @@ class Main extends Sprite
 			isBackgroundSoundPlaying = true;
 		}else if(state == Lose){
 			lives--;
-			messageField.alpha = 1;
 			if(lives <= 0){
 				loseSound.play();
-				messageField.text = "Game over";
 				lives = 3;
+				clearMap();
+				renderMap();
 			}
 			platform.x = 150;
 			platform.y = 450;
@@ -235,10 +240,15 @@ class Main extends Sprite
 		} else if(event.keyCode == 87){ // W key
 			var i:Int;
 			for (i in 0...map.length) {
-					this.removeChild(map[i]);
-					map.remove(map[i]);
+					clearMap();
 					if(map.length == 0){setGameState(Win);}
 			}
+		}
+	}
+
+	private function clearMap():Void{
+		while(map.length > 0){
+			this.removeChild(map.pop());
 		}
 	}
 
