@@ -15,11 +15,11 @@ This project is part of a challenge and a learning exercise of [haxe](haxe.org) 
 #####  folder structure #####
 - Assets: used images and sound effects
 - Export: exported (i.e compiled) versions
-- Source: the source code. Simple class structure was used (some code cleanup is required, I know...) 
+- Source: the source code. Simple class structure was used (some code cleanup is required, I know...)
 
 #####  live version #####
 
-!["live version"](http://imgur.com/cZg7O7O)
+!["live version"](http://i.imgur.com/cZg7O7O.png)
 
 NOTE: the live version is the product of haxe's export to html5. It will open on a phone but won't be playable because the events were directly bound to keys (which won't be acessible on touch screen phones). The live version only serves as a mere demonstration but with some minor adjustments the code could be used to export a flash, mobile, windows or OSX version easily.
 
